@@ -86,6 +86,7 @@ const NewPasswordScreen = () => {
             name="password"
             control={control}
             secureTextEntry
+            isPassword={true}
             rules={{
               required: 'Password is required',
               minLength: {
