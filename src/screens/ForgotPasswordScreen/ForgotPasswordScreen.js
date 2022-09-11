@@ -1,23 +1,40 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, ScrollView, Alert} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 import SocialSignInButtons from '../../components/SocialSignInButtons';
 import {useNavigation} from '@react-navigation/core';
 import {useForm} from 'react-hook-form';
-import {Auth} from 'aws-amplify';
-
+import Amplify, {Auth} from 'aws-amplify';
 const ForgotPasswordScreen = () => {
   const {control, handleSubmit} = useForm();
   const navigation = useNavigation();
-
+  const [loading, setLoading] = useState(false);
   const onSendPressed = async data => {
-    try {
-      await Auth.forgotPassword(data.username);
-      navigation.navigate('NewPassword');
-    } catch (e) {
-      Alert.alert('Oops', e.message);
+    if (loading) {
+      return;
     }
+
+    setLoading(true);
+    const {username} = data;
+    const response = await Auth.forgotPassword(data.username)
+      .then(res => {
+        navigation.navigate('NewPassword', {username});
+      })
+      .catch(error => {
+        Alert.alert('Oops...', error.message);
+      });
+
+    setLoading(false);
+    // console.warn(data);
+    // navigation.navigate('NewPassword');
   };
 
   const onSignInPress = () => {
@@ -25,28 +42,35 @@ const ForgotPasswordScreen = () => {
   };
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.root}>
-        <Text style={styles.title}>Reset your password</Text>
+    <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0}}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.root}>
+          <Text style={styles.title}>Reset your password</Text>
 
-        <CustomInput
-          name="username"
-          control={control}
-          placeholder="Username"
-          rules={{
-            required: 'Username is required',
-          }}
-        />
+          <CustomInput
+            name="username"
+            control={control}
+            placeholder="Username"
+            rules={{
+              required: 'Username is required',
+            }}
+          />
 
-        <CustomButton text="Send" onPress={handleSubmit(onSendPressed)} />
+          <CustomButton text="Send" onPress={handleSubmit(onSendPressed)} />
 
-        <CustomButton
-          text="Back to Sign in"
-          onPress={onSignInPress}
-          type="TERTIARY"
-        />
-      </View>
-    </ScrollView>
+          <CustomButton
+            text="Back to Sign in"
+            onPress={onSignInPress}
+            type="TERTIARY"
+          />
+        </View>
+      </ScrollView>
+      {loading && (
+        <View style={styles.loading}>
+          <ActivityIndicator size={60} color="purple" />
+        </View>
+      )}
+    </View>
   );
 };
 
@@ -67,6 +91,16 @@ const styles = StyleSheet.create({
   },
   link: {
     color: '#FDB075',
+  },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#77777750',
   },
 });
 

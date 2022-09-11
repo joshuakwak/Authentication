@@ -1,10 +1,21 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Alert} from 'react-native';
 import {Auth} from 'aws-amplify';
 
 const index = () => {
   const signOut = () => {
-    Auth.signOut();
+    Alert.alert(
+      //This is title
+      'Sign out?',
+      //This is body text
+      'Are you sure you want to sign out?',
+      [
+        {text: 'No', onPress: () => console.log('No Pressed'), style: 'cancel'},
+        {text: 'Yes', onPress: () => Auth.signOut()},
+      ],
+      {cancelable: false},
+      //on clicking out side, Alert will not dismiss
+    );
   };
 
   return (

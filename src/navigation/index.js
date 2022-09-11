@@ -43,7 +43,7 @@ const Navigation = () => {
   if (user === undefined) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator />
+        <ActivityIndicator size={60} color="purple" />
       </View>
     );
   }
