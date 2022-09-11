@@ -14,8 +14,12 @@
           "NAME"
         ],
         "passwordProtectionSettings": {
-          "passwordPolicyMinLength": 7,
-          "passwordPolicyCharacters": []
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": [
+            "REQUIRES_LOWERCASE",
+            "REQUIRES_NUMBERS",
+            "REQUIRES_UPPERCASE"
+          ]
         },
         "mfaConfiguration": "OFF",
         "mfaTypes": [

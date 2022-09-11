@@ -8,14 +8,15 @@ import {
   ScrollView,
   TextInput,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
-import Logo from '../../../assets/images/Logo_1.png';
+import Logo from '../../../assets/images/reactnativeicon.png';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 import SocialSignInButtons from '../../components/SocialSignInButtons';
 import {useNavigation} from '@react-navigation/native';
 import {useForm, Controller} from 'react-hook-form';
-import {Auth} from 'aws-amplify';
+import Amplify, {Auth} from 'aws-amplify';
 
 const SignInScreen = () => {
   const {height} = useWindowDimensions();
@@ -34,13 +35,19 @@ const SignInScreen = () => {
     }
 
     setLoading(true);
-    try {
-      const response = await Auth.signIn(data.username, data.password);
-      console.log(response);
-    } catch (e) {
-      Alert.alert('Oops', e.message);
-    }
+
+    const response = await Auth.signIn(data.username, data.password)
+      .then(res => {
+        console.log(res);
+      })
+      .catch(error => {
+        Alert.alert('Oops...', error.message);
+      });
+
     setLoading(false);
+    // console.log(data);
+    // // validate user
+    // navigation.navigate('Home');
   };
 
   const onForgotPasswordPressed = () => {
@@ -52,55 +59,62 @@ const SignInScreen = () => {
   };
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <View style={styles.root}>
-        <Image
-          source={Logo}
-          style={[styles.logo, {height: height * 0.3}]}
-          resizeMode="contain"
-        />
+    <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0}}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <View style={styles.root}>
+          <Image
+            source={Logo}
+            style={[styles.logo, {height: height * 0.3}]}
+            resizeMode="contain"
+          />
 
-        <CustomInput
-          name="username"
-          placeholder="Username"
-          control={control}
-          rules={{required: 'Username is required'}}
-        />
+          <CustomInput
+            name="username"
+            placeholder="Username"
+            control={control}
+            rules={{required: 'Username is required'}}
+          />
 
-        <CustomInput
-          name="password"
-          placeholder="Password"
-          secureTextEntry
-          control={control}
-          rules={{
-            required: 'Password is required',
-            minLength: {
-              value: 3,
-              message: 'Password should be minimum 3 characters long',
-            },
-          }}
-        />
+          <CustomInput
+            name="password"
+            placeholder="Password"
+            secureTextEntry
+            control={control}
+            rules={{
+              required: 'Password is required',
+              minLength: {
+                value: 3,
+                message: 'Password should be minimum 3 characters long',
+              },
+            }}
+          />
 
-        <CustomButton
-          text={loading ? 'Loading...' : 'Sign In'}
-          onPress={handleSubmit(onSignInPressed)}
-        />
+          <CustomButton
+            text={loading ? 'Loading...' : 'Sign In'}
+            onPress={handleSubmit(onSignInPressed)}
+          />
 
-        <CustomButton
-          text="Forgot password?"
-          onPress={onForgotPasswordPressed}
-          type="TERTIARY"
-        />
+          <CustomButton
+            text="Forgot password?"
+            onPress={onForgotPasswordPressed}
+            type="TERTIARY"
+          />
 
-        <SocialSignInButtons />
+          {/* <SocialSignInButtons /> */}
 
-        <CustomButton
-          text="Don't have an account? Create one"
-          onPress={onSignUpPress}
-          type="TERTIARY"
-        />
-      </View>
-    </ScrollView>
+          <CustomButton
+            text="Don't have an account? Create one"
+            onPress={onSignUpPress}
+            type="TERTIARY"
+          />
+        </View>
+      </ScrollView>
+      {loading && (
+        <View style={styles.loading}>
+          <ActivityIndicator size={60} color="purple" />
+        </View>
+      )}
+    </View>
   );
 };
 
@@ -113,6 +127,16 @@ const styles = StyleSheet.create({
     width: '70%',
     maxWidth: 300,
     maxHeight: 200,
+  },
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#77777750',
   },
 });
 
