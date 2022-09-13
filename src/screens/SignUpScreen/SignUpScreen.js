@@ -107,6 +107,7 @@ const SignUpScreen = () => {
             }}
           />
           <CustomInput
+            isPassword={true}
             name="password"
             control={control}
             placeholder="Password"
@@ -120,6 +121,7 @@ const SignUpScreen = () => {
             }}
           />
           <CustomInput
+            isPassword={true}
             name="password-repeat"
             control={control}
             placeholder="Repeat Password"

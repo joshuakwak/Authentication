@@ -76,6 +76,7 @@ const SignInScreen = () => {
           />
 
           <CustomInput
+            isPassword={true}
             name="password"
             placeholder="Password"
             secureTextEntry
@@ -83,8 +84,8 @@ const SignInScreen = () => {
             rules={{
               required: 'Password is required',
               minLength: {
-                value: 3,
-                message: 'Password should be minimum 3 characters long',
+                value: 8,
+                message: 'Password should be minimum 8 characters long',
               },
             }}
           />
