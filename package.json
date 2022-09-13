@@ -12,18 +12,21 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.15.15",
     "@react-native-community/netinfo": "^7.1.7",
-    "@react-native-picker/picker": "^2.2.1",
+    "@react-native-picker/picker": "^2.4.4",
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.1.0",
     "amazon-cognito-identity-js": "^5.2.4",
     "aws-amplify": "^4.3.12",
     "aws-amplify-react-native": "^6.0.2",
+    "moment": "^2.29.4",
     "react": "17.0.2",
     "react-hook-form": "^7.22.1",
     "react-native": "0.65.1",
+    "react-native-date-picker": "^4.2.5",
     "react-native-image-picker": "^4.10.0",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.7.0",
+    "react-native-select-dropdown": "^2.0.4",
     "react-native-vector-icons": "^9.2.0"
   },
   "devDependencies": {

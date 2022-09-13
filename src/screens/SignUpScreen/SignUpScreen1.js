@@ -17,7 +17,7 @@ import {Auth} from 'aws-amplify';
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
-const SignUpScreen = () => {
+const SignUpScreen1 = () => {
   const {control, handleSubmit, watch} = useForm();
   const pwd = watch('password');
   const navigation = useNavigation();
@@ -30,20 +30,22 @@ const SignUpScreen = () => {
 
     setLoading(true);
 
-    const {username, password, email, name} = data;
-    const response = await Auth.signUp({
-      username,
-      password,
-      attributes: {email, name, preferred_username: username},
-    })
-      .then(res => {
-        navigation.navigate('ConfirmEmail', {username});
-      })
-      .catch(error => {
-        Alert.alert('Oops...', error.message);
-      });
-    setLoading(false);
-    // navigation.navigate('ConfirmEmail');
+    // const {username, password, email, given_name} = data;
+    // const response = await Auth.signUp({
+    //   username,
+    //   password,
+    //   attributes: {email, given_name, family_name},
+    // })
+    //   .then(res => {
+    //     navigation.navigate('ConfirmEmail', {username});
+    //   })
+    //   .catch(error => {
+    //     Alert.alert('Oops...', error.message);
+    //   });
+    setTimeout(() => {
+      setLoading(false);
+      navigation.navigate('SignUp2');
+    }, 1000);
   };
 
   const onSignInPress = () => {
@@ -62,41 +64,8 @@ const SignUpScreen = () => {
     <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0}}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.root}>
-          <Text style={styles.title}>Create an account</Text>
+          <Text style={styles.title}>Enter your email and password</Text>
 
-          <CustomInput
-            name="name"
-            control={control}
-            placeholder="Name"
-            rules={{
-              required: 'Name is required',
-              minLength: {
-                value: 3,
-                message: 'Name should be at least 3 characters long',
-              },
-              maxLength: {
-                value: 24,
-                message: 'Name should be max 24 characters long',
-              },
-            }}
-          />
-
-          <CustomInput
-            name="username"
-            control={control}
-            placeholder="Username"
-            rules={{
-              required: 'Username is required',
-              minLength: {
-                value: 3,
-                message: 'Username should be at least 3 characters long',
-              },
-              maxLength: {
-                value: 24,
-                message: 'Username should be max 24 characters long',
-              },
-            }}
-          />
           <CustomInput
             name="email"
             control={control}
@@ -131,23 +100,7 @@ const SignUpScreen = () => {
             }}
           />
 
-          <CustomButton
-            text="Register"
-            onPress={handleSubmit(onRegisterPressed)}
-          />
-
-          <Text style={styles.text}>
-            By registering, you confirm that you accept our{' '}
-            <Text style={styles.link} onPress={onTermsOfUsePressed}>
-              Terms of Use
-            </Text>{' '}
-            and{' '}
-            <Text style={styles.link} onPress={onPrivacyPressed}>
-              Privacy Policy
-            </Text>
-          </Text>
-
-          {/* <SocialSignInButtons /> */}
+          <CustomButton text="Next" onPress={handleSubmit(onRegisterPressed)} />
 
           <CustomButton
             text="Already have an account? Sign in"
@@ -195,4 +148,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignUpScreen;
+export default SignUpScreen1;

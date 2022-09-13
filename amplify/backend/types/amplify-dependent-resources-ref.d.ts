@@ -1,19 +1,14 @@
 export type AmplifyDependentResourcesAttributes = {
     "auth": {
-        "Authentication": {
+        "XureDeal": {
             "IdentityPoolId": "string",
             "IdentityPoolName": "string",
             "UserPoolId": "string",
             "UserPoolArn": "string",
             "UserPoolName": "string",
             "AppClientIDWeb": "string",
-            "AppClientID": "string"
-        }
-    },
-    "storage": {
-        "s3authenticationstorage5743c590": {
-            "BucketName": "string",
-            "Region": "string"
+            "AppClientID": "string",
+            "CreatedSNSRole": "string"
         }
     }
 }

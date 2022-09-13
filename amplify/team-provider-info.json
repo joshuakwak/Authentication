@@ -1,19 +1,20 @@
 {
   "staging": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-authentication-staging-45231-authRole",
-      "UnauthRoleArn": "arn:aws:iam::553019064488:role/amplify-authentication-staging-45231-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::553019064488:role/amplify-authentication-staging-45231-authRole",
+      "AuthRoleName": "amplify-xuredeal-staging-05154-authRole",
+      "UnauthRoleArn": "arn:aws:iam::553019064488:role/amplify-xuredeal-staging-05154-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::553019064488:role/amplify-xuredeal-staging-05154-authRole",
       "Region": "ap-southeast-1",
-      "DeploymentBucketName": "amplify-authentication-staging-45231-deployment",
-      "UnauthRoleName": "amplify-authentication-staging-45231-unauthRole",
-      "StackName": "amplify-authentication-staging-45231",
-      "StackId": "arn:aws:cloudformation:ap-southeast-1:553019064488:stack/amplify-authentication-staging-45231/36c39ec0-2ffb-11ed-93b3-0a4a3b2415d6",
-      "AmplifyAppId": "d2vzxg2ejd0iy2"
+      "DeploymentBucketName": "amplify-xuredeal-staging-05154-deployment",
+      "UnauthRoleName": "amplify-xuredeal-staging-05154-unauthRole",
+      "StackName": "amplify-xuredeal-staging-05154",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:553019064488:stack/amplify-xuredeal-staging-05154/18d3c2a0-3235-11ed-af7b-02d2a38b514c",
+      "AmplifyAppId": "d2hlspp427bu1b"
     },
     "categories": {
       "auth": {
-        "Authentication": {}
+        "Authentication": {},
+        "XureDeal": {}
       }
     }
   }

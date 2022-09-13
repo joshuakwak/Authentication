@@ -1,23 +1,33 @@
 {
   "auth": {
-    "Authentication": {
+    "XureDeal": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
       "customAuth": false,
       "frontendAuthConfig": {
         "socialProviders": [],
-        "usernameAttributes": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
         "signupAttributes": [
-          "PREFERRED_USERNAME",
           "EMAIL",
-          "NAME"
+          "GIVEN_NAME",
+          "MIDDLE_NAME",
+          "FAMILY_NAME",
+          "GENDER",
+          "BIRTHDATE",
+          "ADDRESS",
+          "NICKNAME",
+          "PICTURE",
+          "PHONE_NUMBER"
         ],
         "passwordProtectionSettings": {
           "passwordPolicyMinLength": 8,
           "passwordPolicyCharacters": [
             "REQUIRES_LOWERCASE",
             "REQUIRES_NUMBERS",
+            "REQUIRES_SYMBOLS",
             "REQUIRES_UPPERCASE"
           ]
         },
@@ -29,13 +39,6 @@
           "EMAIL"
         ]
       }
-    }
-  },
-  "storage": {
-    "s3authenticationstorage5743c590": {
-      "service": "S3",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": []
     }
   }
 }

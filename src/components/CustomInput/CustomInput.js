@@ -15,6 +15,7 @@ const CustomInput = ({
   placeholder,
   secureTextEntry,
   isPassword,
+  value,
 }) => {
   const [hidePassword, setPasswordVisibility] = React.useState(secureTextEntry);
   return (

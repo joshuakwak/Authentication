@@ -4,12 +4,16 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import SignInScreen from '../screens/SignInScreen';
-import SignUpScreen from '../screens/SignUpScreen';
 import ConfirmEmailScreen from '../screens/ConfirmEmailScreen';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import NewPasswordScreen from '../screens/NewPasswordScreen';
 import HomeScreen from '../screens/HomeScreen';
 import {Auth, Hub} from 'aws-amplify';
+import SignUpScreen1 from '../screens/SignUpScreen/SignUpScreen1';
+import SignUpScreen2 from '../screens/SignUpScreen/SignUpScreen2';
+import SignUpScreen3 from '../screens/SignUpScreen/SignUpScreen3';
+import SignUpScreen4 from '../screens/SignUpScreen/SignUpScreen4';
+import SignUpScreen5 from '../screens/SignUpScreen/SignUpScreen5';
 
 const Stack = createNativeStackNavigator();
 
@@ -56,7 +60,11 @@ const Navigation = () => {
         ) : (
           <>
             <Stack.Screen name="SignIn" component={SignInScreen} />
-            <Stack.Screen name="SignUp" component={SignUpScreen} />
+            <Stack.Screen name="SignUp1" component={SignUpScreen1} />
+            <Stack.Screen name="SignUp2" component={SignUpScreen2} />
+            <Stack.Screen name="SignUp3" component={SignUpScreen3} />
+            <Stack.Screen name="SignUp4" component={SignUpScreen4} />
+            <Stack.Screen name="SignUp5" component={SignUpScreen5} />
             <Stack.Screen name="ConfirmEmail" component={ConfirmEmailScreen} />
             <Stack.Screen
               name="ForgotPassword"
