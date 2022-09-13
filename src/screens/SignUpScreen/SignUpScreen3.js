@@ -12,8 +12,8 @@ import {
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 import SocialSignInButtons from '../../components/SocialSignInButtons';
-import {useNavigation} from '@react-navigation/core';
-import {useForm} from 'react-hook-form';
+import {useNavigation, useRoute} from '@react-navigation/core';
+import {set, useForm} from 'react-hook-form';
 import {Auth} from 'aws-amplify';
 import SelectDropdown from 'react-native-select-dropdown';
 import DatePicker from 'react-native-date-picker';
@@ -27,12 +27,84 @@ const SignUpScreen3 = () => {
   const {control, handleSubmit, watch} = useForm();
   const pwd = watch('password');
   const navigation = useNavigation();
-  const [loading, setLoading] = useState(false);
-  const [datePickerOpen, setDatePickerOpen] = React.useState(false);
-  const [birthdate, setBirthdate] = React.useState(new Date());
-  const [birthdateString, setBirthdateString] = React.useState('');
-  const [genderError, setGenderError] = React.useState(false);
-  const [birthdateError, setBirthdateError] = React.useState(false);
+  const route = useRoute();
+  const [countries, setCountries] = React.useState([]);
+  const [states, setStates] = React.useState([]);
+  const [cities, setCities] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+  const [imageUri, setImageUri] = React.useState('');
+  const fetchCountries = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        'http://184.73.77.248:82/api/XDApp/GetCountry',
+      );
+      const json = await response.json();
+      const country_names = [];
+      json.map(item => {
+        console.log(item.country_name);
+        country_names.push(item.country_name);
+      });
+      setCountries(country_names);
+      fetchStates(countries[countries.indexOf('Philippines')]);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
+
+  const fetchStates = async country => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        'http://184.73.77.248:82/api/XDApp/GetState?country=' + country,
+        {method: 'POST'},
+      );
+      const json = await response.json();
+      const state_names = [];
+      json.map(item => {
+        console.log(item.state_name);
+        state_names.push(item.state_name);
+      });
+      state_names.sort();
+      setStates(state_names);
+      console.log(json);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
+
+  const fetchCities = async state => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        'http://184.73.77.248:82/api/XDApp/GetCities?state=' + state,
+        {method: 'POST'},
+      );
+      const json = await response.json();
+      const city_names = [];
+      json.map(item => {
+        console.log(item.city_name);
+        city_names.push(item.city_name);
+      });
+      city_names.sort();
+      setCities(city_names);
+      console.log(cities);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchCountries();
+
+    console.log(route.params);
+  }, []);
 
   const onRegisterPressed = async data => {
     if (loading) {
@@ -65,7 +137,8 @@ const SignUpScreen3 = () => {
         <View style={styles.root}>
           <Text style={styles.title}>Enter your address</Text>
           <SelectDropdown
-            defaultButtonText="Country"
+            defaultButtonText="Select Country"
+            defaultValue={countries[countries.indexOf('Philippines')]}
             buttonStyle={{
               borderWidth: 1,
               borderColor: '#e8e8e8',
@@ -82,9 +155,10 @@ const SignUpScreen3 = () => {
               textAlignVertical: 'center',
               color: 'gray',
             }}
-            data={gender}
+            data={countries}
             onSelect={(selectedItem, index) => {
               console.log(selectedItem, index);
+              fetchStates(selectedItem);
             }}
             buttonTextAfterSelection={(selectedItem, index) => {
               // text represented after item is selected
@@ -115,9 +189,10 @@ const SignUpScreen3 = () => {
               textAlignVertical: 'center',
               color: 'gray',
             }}
-            data={gender}
+            data={states}
             onSelect={(selectedItem, index) => {
               console.log(selectedItem, index);
+              fetchCities(selectedItem);
             }}
             buttonTextAfterSelection={(selectedItem, index) => {
               // text represented after item is selected
@@ -148,7 +223,7 @@ const SignUpScreen3 = () => {
               textAlignVertical: 'center',
               color: 'gray',
             }}
-            data={gender}
+            data={cities}
             onSelect={(selectedItem, index) => {
               console.log(selectedItem, index);
             }}

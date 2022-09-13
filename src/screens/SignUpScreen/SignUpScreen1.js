@@ -10,7 +10,7 @@ import {
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 import SocialSignInButtons from '../../components/SocialSignInButtons';
-import {useNavigation} from '@react-navigation/core';
+import {useNavigation, useRoute} from '@react-navigation/core';
 import {useForm} from 'react-hook-form';
 import {Auth} from 'aws-amplify';
 
@@ -22,14 +22,14 @@ const SignUpScreen1 = () => {
   const pwd = watch('password');
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
-
+  const route = useRoute();
   const onRegisterPressed = async data => {
     if (loading) {
       return;
     }
 
     setLoading(true);
-
+    console.log(data.password);
     // const {username, password, email, given_name} = data;
     // const response = await Auth.signUp({
     //   username,
@@ -44,7 +44,22 @@ const SignUpScreen1 = () => {
     //   });
     setTimeout(() => {
       setLoading(false);
-      navigation.navigate('SignUp2');
+      navigation.navigate('SignUp2', {
+        email: data.email,
+        password: data.password,
+        first_name: route.params.first_name,
+        middle_name: route.params.middle_name,
+        last_name: route.params.last_name,
+        gender: route.params.genderValue,
+        birthdate: route.params.birthdateString,
+        country: route.params.country,
+        state: route.params.state,
+        city: route.params.city,
+        nickname: route.params.nickname,
+        profile_picture: route.params.profile_picture,
+        mobile_number: route.params.mobile_number,
+        mobile_number_formatted: route.params.mobile_number_formatted,
+      });
     }, 1000);
   };
 

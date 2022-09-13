@@ -14,6 +14,9 @@ import SignUpScreen2 from '../screens/SignUpScreen/SignUpScreen2';
 import SignUpScreen3 from '../screens/SignUpScreen/SignUpScreen3';
 import SignUpScreen4 from '../screens/SignUpScreen/SignUpScreen4';
 import SignUpScreen5 from '../screens/SignUpScreen/SignUpScreen5';
+import SignUpScreen6 from '../screens/SignUpScreen/SignUpScreen6';
+import SignUpScreen7 from '../screens/SignUpScreen/SignUpScreen7';
+import SignUpScreen8 from '../screens/SignUpScreen/SignUpScreen8';
 
 const Stack = createNativeStackNavigator();
 
@@ -65,6 +68,9 @@ const Navigation = () => {
             <Stack.Screen name="SignUp3" component={SignUpScreen3} />
             <Stack.Screen name="SignUp4" component={SignUpScreen4} />
             <Stack.Screen name="SignUp5" component={SignUpScreen5} />
+            <Stack.Screen name="SignUp6" component={SignUpScreen6} />
+            <Stack.Screen name="SignUp7" component={SignUpScreen7} />
+            <Stack.Screen name="SignUp8" component={SignUpScreen8} />
             <Stack.Screen name="ConfirmEmail" component={ConfirmEmailScreen} />
             <Stack.Screen
               name="ForgotPassword"

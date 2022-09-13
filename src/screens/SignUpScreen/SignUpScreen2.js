@@ -8,11 +8,12 @@ import {
   ActivityIndicator,
   TextInput,
   TouchableOpacity,
+  BackHandler,
 } from 'react-native';
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 import SocialSignInButtons from '../../components/SocialSignInButtons';
-import {useNavigation} from '@react-navigation/core';
+import {useNavigation, useRoute} from '@react-navigation/core';
 import {useForm} from 'react-hook-form';
 import {Auth} from 'aws-amplify';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -27,12 +28,14 @@ const SignUpScreen2 = () => {
   const {control, handleSubmit, watch} = useForm();
   const pwd = watch('password');
   const navigation = useNavigation();
+  const route = useRoute();
   const [loading, setLoading] = useState(false);
   const [datePickerOpen, setDatePickerOpen] = React.useState(false);
   const [birthdate, setBirthdate] = React.useState(new Date());
   const [birthdateString, setBirthdateString] = React.useState('');
   const [genderError, setGenderError] = React.useState(false);
   const [birthdateError, setBirthdateError] = React.useState(false);
+  const [genderValue, setGenderValue] = React.useState('');
 
   const onRegisterPressed = async data => {
     if (loading) {
@@ -43,7 +46,22 @@ const SignUpScreen2 = () => {
 
     setTimeout(() => {
       setLoading(false);
-      navigation.navigate('SignUp3');
+      navigation.navigate('SignUp3', {
+        email: route.params.email,
+        password: route.params.password,
+        first_name: data.first_name,
+        middle_name: data.middle_name,
+        last_name: data.last_name,
+        gender: genderValue,
+        birthdate: birthdateString,
+        country: route.params.country,
+        state: route.params.state,
+        city: route.params.city,
+        nickname: route.params.nickname,
+        profile_picture: route.params.profile_picture,
+        mobile_number: route.params.mobile_number,
+        mobile_number_formatted: route.params.mobile_number_formatted,
+      });
     }, 1000);
   };
 
@@ -58,6 +76,37 @@ const SignUpScreen2 = () => {
   const onPrivacyPressed = () => {
     console.warn('onPrivacyPressed');
   };
+
+  function handleBackButtonClick() {
+    navigation.navigate('SignUp1', {
+      email: route.params.email,
+      password: route.params.password,
+      first_name: data.first_name,
+      middle_name: data.middle_name,
+      last_name: data.last_name,
+      gender: genderValue,
+      birthdate: birthdateString,
+      country: route.params.country,
+      state: route.params.state,
+      city: route.params.city,
+      nickname: route.params.nickname,
+      profile_picture: route.params.profile_picture,
+      mobile_number: route.params.mobile_number,
+      mobile_number_formatted: mobile_number_formatted,
+    });
+    return true;
+  }
+
+  React.useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener(
+        'hardwareBackPress',
+        handleBackButtonClick,
+      );
+    };
+    console.log(route.params);
+  }, []);
 
   return (
     <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0}}>
@@ -135,7 +184,7 @@ const SignUpScreen2 = () => {
             }}
             data={gender}
             onSelect={(selectedItem, index) => {
-              console.log(selectedItem, index);
+              setGenderValue(selectedItem);
             }}
             buttonTextAfterSelection={(selectedItem, index) => {
               // text represented after item is selected

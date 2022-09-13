@@ -10,15 +10,6 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-/* Icons Import  */
-import AntDesignIcon from 'react-native-vector-icons/AntDesign';
-import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import Ionicon from 'react-native-vector-icons/Ionicons';
-import Octicon from 'react-native-vector-icons/Octicons';
-import EntypoIcon from 'react-native-vector-icons/Entypo';
-/* Icons Import  */
 import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 import SocialSignInButtons from '../../components/SocialSignInButtons';
@@ -30,20 +21,19 @@ import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Moment from 'moment';
 import {Picker} from '@react-native-picker/picker';
+import PhoneInput from 'react-native-phone-number-input';
+
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 const gender = ['Male', 'Female', 'Rather not say'];
-const SignUpScreen5 = () => {
+const SignUpScreen6 = () => {
   const {control, handleSubmit, watch} = useForm();
   const pwd = watch('password');
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
-  const [datePickerOpen, setDatePickerOpen] = React.useState(false);
-  const [birthdate, setBirthdate] = React.useState(new Date());
-  const [birthdateString, setBirthdateString] = React.useState('');
-  const [genderError, setGenderError] = React.useState(false);
-  const [birthdateError, setBirthdateError] = React.useState(false);
-
+  const phoneInput = React.useRef();
+  const [formattedValue, setFormattedValue] = React.useState('');
+  const [phoneValue, setPhoneValue] = React.useState('');
   const onRegisterPressed = async data => {
     if (loading) {
       return;
@@ -53,7 +43,7 @@ const SignUpScreen5 = () => {
 
     setTimeout(() => {
       setLoading(false);
-      navigation.navigate('SignUp6');
+      navigation.navigate('SignUp7');
     }, 1000);
   };
 
@@ -73,35 +63,64 @@ const SignUpScreen5 = () => {
     <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0}}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.root}>
-          <Text style={styles.title}>Set your profile picture</Text>
-          <View
-            style={{
-              flex: 2,
-              alignItems: 'center',
-              justifyContent: 'flex-start',
-            }}>
-            <View style={{alignSelf: 'center'}}>
-              <View style={styles.profileImage}>
-                <Image
-                  source={require('../../../assets/images/usericon.jpg')}
-                  style={styles.image}></Image>
-              </View>
-              <View style={styles.profileImageButton}>
-                <TouchableOpacity
-                  onPress={() => {
-                    refRBSheet.current.open();
-                  }}>
-                  <FontAwesome5Icon
-                    style={styles.searchIcon}
-                    name={'plus'}
-                    size={20}
-                    color="#fff"
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
+          <Text style={styles.title}>Enter your phone number</Text>
+
+          <PhoneInput
+            ref={phoneInput}
+            placeholder="Mobile Number"
+            defaultCode="PH"
+            layout="first"
+            onChangeText={
+              value => {
+                setPhoneValue(value);
+              } //setting the formData to the value input of the textfield
+            }
+            onChangeFormattedText={text => {
+              setFormattedValue(text);
+              // setFormData({
+              //   ...formData,
+              //   mobile_number_formatted: text,
+              // });
+            }}
+            getCallingCode={code => {
+              //setPhoneCode(code);
+            }}
+            containerStyle={{
+              backgroundColor: '#FFF',
+              borderColor: '#e8e8e8',
+              borderWidth: 1,
+              borderRadius: 5,
+              width: '100%',
+            }}
+            textContainerStyle={{
+              backgroundColor: '#FFF',
+              borderRadius: 5,
+              borderBottomStartRadius: 1,
+              borderTopStartRadius: 1,
+              borderColor: '#e8e8e8',
+              borderLeftWidth: 1,
+            }}
+            textInputStyle={{
+              fontSize: 16,
+              color: '#000',
+              padding: 1,
+            }}
+            codeTextStyle={{
+              fontSize: 16,
+              color: '#000',
+              padding: 4,
+              paddingBottom: 5,
+            }}
+            withDarkTheme={true}
+            withShadow
+            autoFocus
+          />
           <CustomButton text="Next" onPress={handleSubmit(onRegisterPressed)} />
+          {/* <CustomButton
+            text="Already have an account? Sign in"
+            onPress={onSignInPress}
+            type="TERTIARY"
+          /> */}
         </View>
       </ScrollView>
       {loading && (
@@ -152,32 +171,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginVertical: 5,
   },
-  image: {
-    flex: 1,
-    height: undefined,
-    width: undefined,
-  },
-  profileImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    overflow: 'hidden',
-    borderColor: '#FFF',
-    borderWidth: 5,
-  },
-  profileImageButton: {
-    backgroundColor: '#41444B',
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: 'gray',
-    borderWidth: 1,
-  },
 });
 
-export default SignUpScreen5;
+export default SignUpScreen6;

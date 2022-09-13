@@ -30,20 +30,12 @@ import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Moment from 'moment';
 import {Picker} from '@react-native-picker/picker';
-const EMAIL_REGEX =
-  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-const gender = ['Male', 'Female', 'Rather not say'];
-const SignUpScreen5 = () => {
-  const {control, handleSubmit, watch} = useForm();
-  const pwd = watch('password');
+import OTPInputView from '@twotalltotems/react-native-otp-input';
+const SignUpScreen7 = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
-  const [datePickerOpen, setDatePickerOpen] = React.useState(false);
-  const [birthdate, setBirthdate] = React.useState(new Date());
-  const [birthdateString, setBirthdateString] = React.useState('');
-  const [genderError, setGenderError] = React.useState(false);
-  const [birthdateError, setBirthdateError] = React.useState(false);
-
+  const [otp, setOTP] = React.useState('');
+  const refOTP = React.useRef();
   const onRegisterPressed = async data => {
     if (loading) {
       return;
@@ -53,7 +45,7 @@ const SignUpScreen5 = () => {
 
     setTimeout(() => {
       setLoading(false);
-      navigation.navigate('SignUp6');
+      navigation.navigate('SignUp8');
     }, 1000);
   };
 
@@ -73,35 +65,30 @@ const SignUpScreen5 = () => {
     <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0}}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.root}>
-          <Text style={styles.title}>Set your profile picture</Text>
-          <View
-            style={{
-              flex: 2,
-              alignItems: 'center',
-              justifyContent: 'flex-start',
-            }}>
-            <View style={{alignSelf: 'center'}}>
-              <View style={styles.profileImage}>
-                <Image
-                  source={require('../../../assets/images/usericon.jpg')}
-                  style={styles.image}></Image>
-              </View>
-              <View style={styles.profileImageButton}>
-                <TouchableOpacity
-                  onPress={() => {
-                    refRBSheet.current.open();
-                  }}>
-                  <FontAwesome5Icon
-                    style={styles.searchIcon}
-                    name={'plus'}
-                    size={20}
-                    color="#fff"
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
+          <Text style={styles.title}>
+            Enter 6-digit OTP code sent to your mobile number.
+          </Text>
+          <View style={{height: 100, width: '100%'}}>
+            <OTPInputView
+              ref={refOTP}
+              pinCount={6}
+              // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
+              // onCodeChanged = {code => { this.setState({code})}}
+              autoFocusOnLoad={false}
+              codeInputFieldStyle={styles.underlineStyleBase}
+              codeInputHighlightStyle={styles.underlineStyleHighLighted}
+              onCodeFilled={code => {
+                console.log(`Code is ${code}, you are good to go!`);
+              }}
+            />
           </View>
-          <CustomButton text="Next" onPress={handleSubmit(onRegisterPressed)} />
+
+          <CustomButton text="Next" onPress={onRegisterPressed} />
+          {/* <CustomButton
+            text="Already have an account? Sign in"
+            onPress={onSignInPress}
+            type="TERTIARY"
+          /> */}
         </View>
       </ScrollView>
       {loading && (
@@ -152,32 +139,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     marginVertical: 5,
   },
-  image: {
-    flex: 1,
-    height: undefined,
-    width: undefined,
+  borderStyleBase: {
+    width: 50,
+    height: 50,
+    borderRadius: 10,
+    color: 'white',
+    fontSize: 30,
   },
-  profileImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    overflow: 'hidden',
-    borderColor: '#FFF',
-    borderWidth: 5,
+
+  borderStyleHighLighted: {
+    backgroundColor: '#202020',
   },
-  profileImageButton: {
-    backgroundColor: '#41444B',
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: 'gray',
-    borderWidth: 1,
+
+  underlineStyleBase: {
+    width: 30,
+    height: 45,
+    borderWidth: 0,
+    borderBottomWidth: 2,
+    color: '#000',
+    fontWeight: 'bold',
+    fontSize: 20,
+  },
+
+  underlineStyleHighLighted: {
+    borderColor: '#03DAC6',
   },
 });
 
-export default SignUpScreen5;
+export default SignUpScreen7;
