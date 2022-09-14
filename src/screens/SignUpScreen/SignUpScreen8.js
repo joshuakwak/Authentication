@@ -253,7 +253,16 @@ const SignUpScreen8 = () => {
               {city + ', ' + state + ', ' + country}
             </Text>
           </View>
-
+          <Text style={styles.text}>
+            By registering, you confirm that you accept our{' '}
+            <Text style={styles.link} onPress={onTermsOfUsePressed}>
+              Terms of Use
+            </Text>{' '}
+            and{' '}
+            <Text style={styles.link} onPress={onPrivacyPressed}>
+              Privacy Policy
+            </Text>
+          </Text>
           <CustomButton text="Submit" onPress={onRegisterPressed} />
           {/* <CustomButton
             text="Already have an account? Sign in"
