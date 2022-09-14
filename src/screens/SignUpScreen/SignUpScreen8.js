@@ -65,7 +65,7 @@ const SignUpScreen8 = () => {
   const [nickname, setNickname] = useState('');
   const [picture, setPicture] = useState('');
   const [mobile, setMobile] = useState('');
-
+  const [address, setAddress] = useState('');
   const onRegisterPressed = async data => {
     if (loading) {
       return;
@@ -73,10 +73,34 @@ const SignUpScreen8 = () => {
 
     setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
-      navigation.navigate('SignUp8');
-    }, 1000);
+    const response = await Auth.signUp({
+      nickname,
+      password,
+      attributes: {
+        preferred_username: nickname,
+        email,
+        first_name,
+        middle_name,
+        last_name,
+        gender,
+        birthdate,
+        address,
+        nickname,
+        picture,
+        mobile,
+      },
+    })
+      .then(res => {
+        setLoading(false);
+        Alert.alert('Success', 'Registered Successfully.');
+        //navigation.navigate('ConfirmEmail', {username});
+      })
+      .catch(error => {
+        setLoading(false);
+        Alert.alert('Oops...', error.message);
+      });
+
+    setTimeout(() => {}, 1000);
   };
 
   React.useEffect(async () => {
@@ -120,6 +144,7 @@ const SignUpScreen8 = () => {
       const city = await AsyncStorage.getItem(storagekey_city);
       if (city !== null) {
         setCity(city);
+        setAddress(city + ', ' + state + ', ' + country);
       }
       const nick = await AsyncStorage.getItem(storagekey_nickname);
       if (nick !== null) {
