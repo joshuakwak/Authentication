@@ -31,9 +31,41 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Moment from 'moment';
 import {Picker} from '@react-native-picker/picker';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const storagekey_email = 'storagekey_email';
+const storagekey_password = 'storagekey_password';
+const storagekey_repeatpassword = 'storagekey_repeatpassword';
+const storagekey_first_name = 'storagekey_first_name';
+const storagekey_middle_name = 'storagekey_middle_name';
+const storagekey_last_name = 'storagekey_last_name';
+const storagekey_gender = 'storagekey_gender';
+const storagekey_birthdate = 'storagekey_birthdate';
+const storagekey_country = 'storagekey_country';
+const storagekey_state = 'storagekey_state';
+const storagekey_city = 'storagekey_city';
+const storagekey_nickname = 'storagekey_nickname';
+const storagekey_picture = 'storagekey_picture';
+const storagekey_mobile = 'storagekey_mobile';
+
 const SignUpScreen8 = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [first_name, setFirstName] = React.useState('');
+  const [middle_name, setMiddleName] = React.useState('');
+  const [last_name, setLastName] = React.useState('');
+  const [gender, setGender] = useState('');
+  const [birthdate, setBirthdate] = useState('');
+  const [country, setCountry] = useState('');
+  const [state, setState] = useState('');
+  const [city, setCity] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [picture, setPicture] = useState('');
+  const [mobile, setMobile] = useState('');
+
   const onRegisterPressed = async data => {
     if (loading) {
       return;
@@ -46,6 +78,61 @@ const SignUpScreen8 = () => {
       navigation.navigate('SignUp8');
     }, 1000);
   };
+
+  React.useEffect(async () => {
+    try {
+      const email = await AsyncStorage.getItem(storagekey_email);
+      if (email !== null) {
+        setEmail(email);
+      }
+      const password = await AsyncStorage.getItem(storagekey_password);
+      if (password !== null) {
+        setPassword(password);
+      }
+      const fname = await AsyncStorage.getItem(storagekey_first_name);
+      if (fname !== null) {
+        setFirstName(fname);
+      }
+      const mname = await AsyncStorage.getItem(storagekey_middle_name);
+      if (mname !== null) {
+        setMiddleName(mname);
+      }
+      const lname = await AsyncStorage.getItem(storagekey_last_name);
+      if (lname !== null) {
+        setLastName(lname);
+      }
+      const gender = await AsyncStorage.getItem(storagekey_gender);
+      if (gender !== null) {
+        setGender(gender);
+      }
+      const birthdate = await AsyncStorage.getItem(storagekey_birthdate);
+      if (birthdate !== null) {
+        setBirthdate(birthdate);
+      }
+      const country = await AsyncStorage.getItem(storagekey_country);
+      if (country !== null) {
+        setCountry(country);
+      }
+      const state = await AsyncStorage.getItem(storagekey_state);
+      if (state !== null) {
+        setState(state);
+      }
+      const city = await AsyncStorage.getItem(storagekey_city);
+      if (city !== null) {
+        setCity(city);
+      }
+      const nick = await AsyncStorage.getItem(storagekey_nickname);
+      if (nick !== null) {
+        setNickname(nick);
+      }
+      const mobile = await AsyncStorage.getItem(storagekey_mobile);
+      if (mobile !== null) {
+        setMobile(mobile);
+      }
+    } catch (e) {
+      alert('Failed to fetch the input from storage');
+    }
+  }, []);
 
   const onSignInPress = () => {
     navigation.navigate('SignIn');
@@ -76,7 +163,7 @@ const SignUpScreen8 = () => {
               marginBottom: 10,
             }}>
             <Text style={styles.contentText}>Nickname</Text>
-            <Text style={styles.subContentText}>Nickname</Text>
+            <Text style={styles.subContentText}>{nickname}</Text>
           </View>
           <View
             style={{
@@ -90,7 +177,9 @@ const SignUpScreen8 = () => {
               marginBottom: 10,
             }}>
             <Text style={styles.contentText}>Name</Text>
-            <Text style={styles.subContentText}>Name</Text>
+            <Text style={styles.subContentText}>
+              {first_name + ' ' + middle_name + ' ' + last_name}
+            </Text>
           </View>
           <View
             style={{
@@ -104,7 +193,7 @@ const SignUpScreen8 = () => {
               marginBottom: 10,
             }}>
             <Text style={styles.contentText}>Email Address</Text>
-            <Text style={styles.subContentText}>Email Address</Text>
+            <Text style={styles.subContentText}>{email}</Text>
           </View>
           <View
             style={{
@@ -117,8 +206,8 @@ const SignUpScreen8 = () => {
               borderBottomWidth: 1,
               marginBottom: 10,
             }}>
-            <Text style={styles.contentText}>Email Address</Text>
-            <Text style={styles.subContentText}>Email Address</Text>
+            <Text style={styles.contentText}>Mobile Number</Text>
+            <Text style={styles.subContentText}>{mobile}</Text>
           </View>
           <View
             style={{
@@ -132,7 +221,7 @@ const SignUpScreen8 = () => {
               marginBottom: 10,
             }}>
             <Text style={styles.contentText}>Birthdate</Text>
-            <Text style={styles.subContentText}>Birthdate</Text>
+            <Text style={styles.subContentText}>{birthdate}</Text>
           </View>
           <View
             style={{
@@ -146,7 +235,7 @@ const SignUpScreen8 = () => {
               marginBottom: 10,
             }}>
             <Text style={styles.contentText}>Gender</Text>
-            <Text style={styles.subContentText}>Gender</Text>
+            <Text style={styles.subContentText}>{gender}</Text>
           </View>
           <View
             style={{
@@ -160,7 +249,9 @@ const SignUpScreen8 = () => {
               marginBottom: 10,
             }}>
             <Text style={styles.contentText}>Address</Text>
-            <Text style={styles.subContentText}>Address</Text>
+            <Text style={styles.subContentText}>
+              {city + ', ' + state + ', ' + country}
+            </Text>
           </View>
 
           <CustomButton text="Submit" onPress={onRegisterPressed} />
@@ -249,7 +340,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   subContentText: {
-    color: '#c0c0c0',
+    color: '#000000',
     textAlign: 'left',
     fontSize: 20,
   },

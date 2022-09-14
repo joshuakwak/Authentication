@@ -20,6 +20,10 @@ import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Moment from 'moment';
 import {Picker} from '@react-native-picker/picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const storagekey_country = 'storagekey_country';
+const storagekey_state = 'storagekey_state';
+const storagekey_city = 'storagekey_city';
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 const gender = ['Male', 'Female', 'Rather not say'];
@@ -31,6 +35,9 @@ const SignUpScreen3 = () => {
   const [countries, setCountries] = React.useState([]);
   const [states, setStates] = React.useState([]);
   const [cities, setCities] = React.useState([]);
+  const [selectedCountry, setSelectedCountry] = React.useState('');
+  const [selectedState, setSelectedState] = React.useState('');
+  const [selectedCity, setSelectedCity] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [imageUri, setImageUri] = React.useState('');
   const fetchCountries = async () => {
@@ -100,10 +107,52 @@ const SignUpScreen3 = () => {
     }
   };
 
-  React.useEffect(() => {
-    fetchCountries();
+  const saveData = async (country, state, city) => {
+    try {
+      if (country == '') {
+        alert('Country is required.');
+        return;
+      }
+      if (state == '') {
+        alert('State is required.');
+        return;
+      }
+      if (city == '') {
+        alert('City is required.');
+        return;
+      }
+      await AsyncStorage.setItem(storagekey_country, country);
+      await AsyncStorage.setItem(storagekey_state, state);
+      await AsyncStorage.setItem(storagekey_city, city);
+      console.log('data saved');
 
-    console.log(route.params);
+      navigation.navigate('SignUp4');
+    } catch (e) {
+      console.log(e.message());
+      console.log('Failed to save the data to the storage');
+    }
+  };
+
+  React.useEffect(async () => {
+    try {
+      const country = await AsyncStorage.getItem(storagekey_country);
+      const state = await AsyncStorage.getItem(storagekey_state);
+      const city = await AsyncStorage.getItem(storagekey_city);
+      if (country !== null) {
+        fetchCountries();
+        setSelectedCountry(country);
+      }
+      if (state !== null) {
+        fetchStates(selectedCountry);
+        setSelectedState(state);
+      }
+      if (city !== null) {
+        fetchCities(selectedState);
+        setSelectedCity(city);
+      }
+    } catch (e) {
+      alert('Failed to fetch the input from storage');
+    }
   }, []);
 
   const onRegisterPressed = async data => {
@@ -112,10 +161,9 @@ const SignUpScreen3 = () => {
     }
 
     setLoading(true);
-
+    saveData(selectedCountry, selectedState, selectedCity);
     setTimeout(() => {
       setLoading(false);
-      navigation.navigate('SignUp4');
     }, 1000);
   };
 
@@ -137,8 +185,10 @@ const SignUpScreen3 = () => {
         <View style={styles.root}>
           <Text style={styles.title}>Enter your address</Text>
           <SelectDropdown
-            defaultButtonText="Select Country"
-            defaultValue={countries[countries.indexOf('Philippines')]}
+            defaultButtonText={
+              selectedCountry ? selectedCountry : 'Select Country'
+            }
+            defaultValue={countries[countries.indexOf(selectedCountry)]}
             buttonStyle={{
               borderWidth: 1,
               borderColor: '#e8e8e8',
@@ -157,7 +207,7 @@ const SignUpScreen3 = () => {
             }}
             data={countries}
             onSelect={(selectedItem, index) => {
-              console.log(selectedItem, index);
+              setSelectedCountry(selectedItem);
               fetchStates(selectedItem);
             }}
             buttonTextAfterSelection={(selectedItem, index) => {
@@ -173,6 +223,7 @@ const SignUpScreen3 = () => {
           />
           <SelectDropdown
             defaultButtonText="State"
+            defaultValue={states[states.indexOf(selectedState)]}
             buttonStyle={{
               borderWidth: 1,
               borderColor: '#e8e8e8',
@@ -191,7 +242,7 @@ const SignUpScreen3 = () => {
             }}
             data={states}
             onSelect={(selectedItem, index) => {
-              console.log(selectedItem, index);
+              setSelectedState(selectedItem);
               fetchCities(selectedItem);
             }}
             buttonTextAfterSelection={(selectedItem, index) => {
@@ -207,6 +258,7 @@ const SignUpScreen3 = () => {
           />
           <SelectDropdown
             defaultButtonText="City"
+            defaultValue={cities[cities.indexOf(selectedCity)]}
             buttonStyle={{
               borderWidth: 1,
               borderColor: '#e8e8e8',
@@ -225,7 +277,7 @@ const SignUpScreen3 = () => {
             }}
             data={cities}
             onSelect={(selectedItem, index) => {
-              console.log(selectedItem, index);
+              setSelectedCity(selectedItem);
             }}
             buttonTextAfterSelection={(selectedItem, index) => {
               // text represented after item is selected

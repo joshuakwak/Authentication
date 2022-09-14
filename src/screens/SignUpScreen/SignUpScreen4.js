@@ -21,6 +21,8 @@ import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Moment from 'moment';
 import {Picker} from '@react-native-picker/picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const storagekey_nickname = 'storagekey_nickname';
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 const gender = ['Male', 'Female', 'Rather not say'];
@@ -34,6 +36,7 @@ const SignUpScreen4 = () => {
   const [birthdateString, setBirthdateString] = React.useState('');
   const [genderError, setGenderError] = React.useState(false);
   const [birthdateError, setBirthdateError] = React.useState(false);
+  const [nickname, setNickname] = React.useState('');
 
   const onRegisterPressed = async data => {
     if (loading) {
@@ -41,12 +44,37 @@ const SignUpScreen4 = () => {
     }
 
     setLoading(true);
-
+    saveData(data.nickname ? data.nickname : nickname);
     setTimeout(() => {
       setLoading(false);
-      navigation.navigate('SignUp5');
     }, 1000);
   };
+
+  const saveData = async nick => {
+    try {
+      if (nick == '') {
+        alert('Nickname is required.');
+        return;
+      }
+      await AsyncStorage.setItem(storagekey_nickname, nick);
+      console.log('data saved');
+      navigation.navigate('SignUp5');
+    } catch (e) {
+      console.log(e.message);
+      console.log('Failed to save the data to the storage');
+    }
+  };
+
+  React.useEffect(async () => {
+    try {
+      const nick = await AsyncStorage.getItem(storagekey_nickname);
+      if (nick !== null) {
+        setNickname(nick);
+      }
+    } catch (e) {
+      alert('Failed to fetch the input from storage');
+    }
+  }, []);
 
   const onSignInPress = () => {
     navigation.navigate('SignIn');
@@ -66,16 +94,17 @@ const SignUpScreen4 = () => {
         <View style={styles.root}>
           <Text style={styles.title}>Enter your nickname</Text>
           <CustomInput
+            defValue={nickname}
             name="nickname"
             control={control}
             placeholder="Nickname"
             rules={{
-              required: 'Nickname is required',
               minLength: {
                 value: 3,
                 message: 'Nickname should be at least 3 characters long',
               },
             }}
+            onChangeText={value => setNickname(value)}
           />
           <CustomButton text="Next" onPress={handleSubmit(onRegisterPressed)} />
           {/* <CustomButton

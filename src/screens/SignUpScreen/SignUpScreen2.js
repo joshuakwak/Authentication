@@ -21,6 +21,12 @@ import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Moment from 'moment';
 import {Picker} from '@react-native-picker/picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const storagekey_first_name = 'storagekey_first_name';
+const storagekey_middle_name = 'storagekey_middle_name';
+const storagekey_last_name = 'storagekey_last_name';
+const storagekey_gender = 'storagekey_gender';
+const storagekey_birthdate = 'storagekey_birthdate';
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 const gender = ['Male', 'Female', 'Rather not say'];
@@ -36,6 +42,9 @@ const SignUpScreen2 = () => {
   const [genderError, setGenderError] = React.useState(false);
   const [birthdateError, setBirthdateError] = React.useState(false);
   const [genderValue, setGenderValue] = React.useState('');
+  const [first_name, setFirstName] = React.useState('');
+  const [middle_name, setMiddleName] = React.useState('');
+  const [last_name, setLastName] = React.useState('');
 
   const onRegisterPressed = async data => {
     if (loading) {
@@ -43,26 +52,55 @@ const SignUpScreen2 = () => {
     }
 
     setLoading(true);
+    saveData(
+      data.first_name ? data.first_name : first_name,
+      data.middle_name ? data.middle_name : middle_name,
+      data.last_name ? data.last_name : last_name,
+      genderValue,
+      birthdateString,
+    );
+    setLoading(false);
+  };
 
-    setTimeout(() => {
-      setLoading(false);
-      navigation.navigate('SignUp3', {
-        email: route.params.email,
-        password: route.params.password,
-        first_name: data.first_name,
-        middle_name: data.middle_name,
-        last_name: data.last_name,
-        gender: genderValue,
-        birthdate: birthdateString,
-        country: route.params.country,
-        state: route.params.state,
-        city: route.params.city,
-        nickname: route.params.nickname,
-        profile_picture: route.params.profile_picture,
-        mobile_number: route.params.mobile_number,
-        mobile_number_formatted: route.params.mobile_number_formatted,
-      });
-    }, 1000);
+  const saveData = async (
+    first_name,
+    middle_name,
+    last_name,
+    gender,
+    birthdate,
+  ) => {
+    try {
+      if (first_name == '') {
+        alert('First Name is required.');
+        return;
+      }
+      if (last_name == '') {
+        alert('Last Name is required.');
+        return;
+      }
+      if (!middle_name) {
+        middle_name = '';
+      }
+      if (gender == '') {
+        alert('Gender is required.');
+        return;
+      }
+      if (birthdate == '') {
+        alert('Birthdate is required.');
+        return;
+      }
+      await AsyncStorage.setItem(storagekey_first_name, first_name);
+      await AsyncStorage.setItem(storagekey_middle_name, middle_name);
+      await AsyncStorage.setItem(storagekey_last_name, last_name);
+      await AsyncStorage.setItem(storagekey_gender, gender);
+      await AsyncStorage.setItem(storagekey_birthdate, birthdate);
+      console.log('data saved');
+
+      navigation.navigate('SignUp3');
+    } catch (e) {
+      console.log(e.message);
+      console.log('Failed to save the data to the storage');
+    }
   };
 
   const onSignInPress = () => {
@@ -77,35 +115,31 @@ const SignUpScreen2 = () => {
     console.warn('onPrivacyPressed');
   };
 
-  function handleBackButtonClick() {
-    navigation.navigate('SignUp1', {
-      email: route.params.email,
-      password: route.params.password,
-      first_name: data.first_name,
-      middle_name: data.middle_name,
-      last_name: data.last_name,
-      gender: genderValue,
-      birthdate: birthdateString,
-      country: route.params.country,
-      state: route.params.state,
-      city: route.params.city,
-      nickname: route.params.nickname,
-      profile_picture: route.params.profile_picture,
-      mobile_number: route.params.mobile_number,
-      mobile_number_formatted: mobile_number_formatted,
-    });
-    return true;
-  }
-
-  React.useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
-    return () => {
-      BackHandler.removeEventListener(
-        'hardwareBackPress',
-        handleBackButtonClick,
-      );
-    };
-    console.log(route.params);
+  React.useEffect(async () => {
+    try {
+      const fname = await AsyncStorage.getItem(storagekey_first_name);
+      const mname = await AsyncStorage.getItem(storagekey_middle_name);
+      const lname = await AsyncStorage.getItem(storagekey_last_name);
+      const gender = await AsyncStorage.getItem(storagekey_gender);
+      const bdate = await AsyncStorage.getItem(storagekey_birthdate);
+      if (fname !== null) {
+        setFirstName(fname);
+      }
+      if (mname !== null) {
+        setMiddleName(mname);
+      }
+      if (lname !== null) {
+        setLastName(lname);
+      }
+      if (gender !== null) {
+        setGenderValue(gender);
+      }
+      if (bdate !== null) {
+        setBirthdateString(bdate);
+      }
+    } catch (e) {
+      alert('Failed to fetch the input from storage');
+    }
   }, []);
 
   return (
@@ -115,11 +149,11 @@ const SignUpScreen2 = () => {
           <Text style={styles.title}>Enter your personal details</Text>
 
           <CustomInput
+            defValue={first_name}
             name="first_name"
             control={control}
             placeholder="First name"
             rules={{
-              required: 'First Name is required',
               minLength: {
                 value: 3,
                 message: 'First Name should be at least 3 characters long',
@@ -129,9 +163,11 @@ const SignUpScreen2 = () => {
                 message: 'First Name should be max 24 characters long',
               },
             }}
+            onChangeText={value => setFirstName(value)}
           />
 
           <CustomInput
+            defValue={middle_name}
             name="middle_name"
             control={control}
             placeholder="Middle name"
@@ -145,14 +181,15 @@ const SignUpScreen2 = () => {
                 message: 'Middle Name should be max 24 characters long',
               },
             }}
+            onChangeText={value => setMiddleName(value)}
           />
 
           <CustomInput
+            defValue={last_name}
             name="last_name"
             control={control}
             placeholder="Last name"
             rules={{
-              required: 'Last Name is required',
               minLength: {
                 value: 3,
                 message: 'Last Name should be at least 3 characters long',
@@ -162,9 +199,11 @@ const SignUpScreen2 = () => {
                 message: 'Last Name should be max 24 characters long',
               },
             }}
+            onChangeText={value => setLastName(value)}
           />
 
           <SelectDropdown
+            defaultValue={genderValue}
             defaultButtonText="Gender"
             buttonStyle={{
               borderWidth: 1,

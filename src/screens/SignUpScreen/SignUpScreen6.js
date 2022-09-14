@@ -22,7 +22,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Moment from 'moment';
 import {Picker} from '@react-native-picker/picker';
 import PhoneInput from 'react-native-phone-number-input';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const storagekey_mobile = 'storagekey_mobile';
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 const gender = ['Male', 'Female', 'Rather not say'];
@@ -40,12 +41,39 @@ const SignUpScreen6 = () => {
     }
 
     setLoading(true);
-
+    saveData(formattedValue);
     setTimeout(() => {
       setLoading(false);
-      navigation.navigate('SignUp7');
     }, 1000);
   };
+
+  const saveData = async mobile => {
+    try {
+      if (mobile == '') {
+        alert('Mobile Number is required.');
+        return;
+      }
+      await AsyncStorage.setItem(storagekey_mobile, mobile);
+      console.log('data saved');
+      navigation.navigate('SignUp7');
+    } catch (e) {
+      console.log(e.message);
+      console.log('Failed to save the data to the storage');
+    }
+  };
+
+  React.useEffect(async () => {
+    try {
+      const mobile = await AsyncStorage.getItem(storagekey_mobile);
+      if (mobile !== null) {
+        setPhoneValue(mobile);
+      }
+      console.log(mobile);
+    } catch (e) {
+      s;
+      alert('Failed to fetch the input from storage');
+    }
+  }, []);
 
   const onSignInPress = () => {
     navigation.navigate('SignIn');
@@ -66,6 +94,7 @@ const SignUpScreen6 = () => {
           <Text style={styles.title}>Enter your phone number</Text>
 
           <PhoneInput
+            defaultValue={phoneValue}
             ref={phoneInput}
             placeholder="Mobile Number"
             defaultCode="PH"

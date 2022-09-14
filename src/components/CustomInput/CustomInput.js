@@ -15,7 +15,8 @@ const CustomInput = ({
   placeholder,
   secureTextEntry,
   isPassword,
-  value,
+  defValue,
+  onChangeText,
 }) => {
   const [hidePassword, setPasswordVisibility] = React.useState(secureTextEntry);
   return (
@@ -32,8 +33,9 @@ const CustomInput = ({
             ]}>
             <View style={{flex: 4}}>
               <TextInput
+                defaultValue={defValue}
                 value={value}
-                onChangeText={onChange}
+                onChangeText={onChangeText}
                 onBlur={onBlur}
                 placeholder={placeholder}
                 style={styles.input}

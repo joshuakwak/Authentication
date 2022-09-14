@@ -13,23 +13,49 @@ import SocialSignInButtons from '../../components/SocialSignInButtons';
 import {useNavigation, useRoute} from '@react-navigation/core';
 import {useForm} from 'react-hook-form';
 import {Auth} from 'aws-amplify';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+const storagekey_email = 'storagekey_email';
+const storagekey_password = 'storagekey_password';
+const storagekey_repeatpassword = 'storagekey_repeatpassword';
 const EMAIL_REGEX =
   /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
 const SignUpScreen1 = () => {
+  const [route_params, setRouteParams] = useState({
+    email: '',
+    password: '',
+    first_name: '',
+    middle_name: '',
+    last_name: '',
+    gender: '',
+    birthdate: '',
+    country: '',
+    state: '',
+    city: '',
+    nickname: '',
+    profile_picture: '',
+    mobile_number: '',
+    mobile_number_formatted: '',
+  });
   const {control, handleSubmit, watch} = useForm();
   const pwd = watch('password');
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const route = useRoute();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [repeat_password, setRepeatPassword] = useState('');
   const onRegisterPressed = async data => {
     if (loading) {
       return;
     }
 
     setLoading(true);
-    console.log(data.password);
+    saveData(
+      data.email ? data.email : email,
+      data.password ? data.password : password,
+      data.repeat_password ? data.repeat_password : repeat_password,
+    );
     // const {username, password, email, given_name} = data;
     // const response = await Auth.signUp({
     //   username,
@@ -42,26 +68,39 @@ const SignUpScreen1 = () => {
     //   .catch(error => {
     //     Alert.alert('Oops...', error.message);
     //   });
-    setTimeout(() => {
-      setLoading(false);
-      navigation.navigate('SignUp2', {
-        email: data.email,
-        password: data.password,
-        first_name: route.params.first_name,
-        middle_name: route.params.middle_name,
-        last_name: route.params.last_name,
-        gender: route.params.genderValue,
-        birthdate: route.params.birthdateString,
-        country: route.params.country,
-        state: route.params.state,
-        city: route.params.city,
-        nickname: route.params.nickname,
-        profile_picture: route.params.profile_picture,
-        mobile_number: route.params.mobile_number,
-        mobile_number_formatted: route.params.mobile_number_formatted,
-      });
-    }, 1000);
+    setLoading(false);
+    navigation.navigate('SignUp2');
   };
+
+  const saveData = async (email, password, repeat_password) => {
+    try {
+      await AsyncStorage.setItem(storagekey_email, email);
+      await AsyncStorage.setItem(storagekey_password, password);
+      await AsyncStorage.setItem(storagekey_repeatpassword, repeat_password);
+      console.log('email and password saved');
+    } catch (e) {
+      console.log('Failed to save the data to the storage');
+    }
+  };
+
+  React.useEffect(async () => {
+    try {
+      const email = await AsyncStorage.getItem(storagekey_email);
+      const pword = await AsyncStorage.getItem(storagekey_password);
+      const rpword = await AsyncStorage.getItem(storagekey_repeatpassword);
+      if (email !== null) {
+        setEmail(email);
+      }
+      if (pword !== null) {
+        setPassword(pword);
+      }
+      if (pword !== null) {
+        setRepeatPassword(rpword);
+      }
+    } catch (e) {
+      alert('Failed to fetch the input from storage');
+    }
+  }, []);
 
   const onSignInPress = () => {
     navigation.navigate('SignIn');
@@ -82,29 +121,32 @@ const SignUpScreen1 = () => {
           <Text style={styles.title}>Enter your email and password</Text>
 
           <CustomInput
+            defValue={email}
             name="email"
             control={control}
             placeholder="Email"
             rules={{
-              required: 'Email is required',
               pattern: {value: EMAIL_REGEX, message: 'Email is invalid'},
             }}
+            onChangeText={value => setEmail(value)}
           />
           <CustomInput
+            defValue={password}
             isPassword={true}
             name="password"
             control={control}
             placeholder="Password"
             secureTextEntry
             rules={{
-              required: 'Password is required',
               minLength: {
                 value: 8,
                 message: 'Password should be at least 8 characters long',
               },
             }}
+            onChangeText={value => setPassword(value)}
           />
           <CustomInput
+            defValue={repeat_password}
             isPassword={true}
             name="password-repeat"
             control={control}
@@ -113,6 +155,7 @@ const SignUpScreen1 = () => {
             rules={{
               validate: value => value === pwd || 'Password do not match',
             }}
+            onChangeText={value => setRepeatPassword(value)}
           />
 
           <CustomButton text="Next" onPress={handleSubmit(onRegisterPressed)} />
