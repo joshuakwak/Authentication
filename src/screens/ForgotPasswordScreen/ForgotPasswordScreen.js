@@ -13,20 +13,35 @@ import SocialSignInButtons from '../../components/SocialSignInButtons';
 import {useNavigation} from '@react-navigation/core';
 import {useForm} from 'react-hook-form';
 import Amplify, {Auth} from 'aws-amplify';
+const EMAIL_REGEX =
+  /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 const ForgotPasswordScreen = () => {
   const {control, handleSubmit} = useForm();
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
   const onSendPressed = async data => {
     if (loading) {
       return;
     }
 
     setLoading(true);
+
+    if (email == '') {
+      Alert.alert('Invalid email.', 'Please input your email.');
+      setLoading(false);
+      return;
+    }
+    if (EMAIL_REGEX.test(email) === false) {
+      Alert.alert('Invalid Email', 'Please input your correct email.');
+      setLoading(false);
+      return;
+    }
+
     const {username} = data;
-    const response = await Auth.forgotPassword(data.username)
+    const response = await Auth.forgotPassword(email)
       .then(res => {
-        navigation.navigate('NewPassword', {username});
+        navigation.navigate('NewPassword', {username: email});
       })
       .catch(error => {
         Alert.alert('Oops...', error.message);
@@ -48,11 +63,12 @@ const ForgotPasswordScreen = () => {
           <Text style={styles.title}>Reset your password</Text>
 
           <CustomInput
-            name="username"
+            name="email"
             control={control}
-            placeholder="Username"
+            placeholder="Email"
+            onChangeText={v => setEmail(v)}
             rules={{
-              required: 'Username is required',
+              pattern: {value: EMAIL_REGEX, message: 'Email is invalid'},
             }}
           />
 

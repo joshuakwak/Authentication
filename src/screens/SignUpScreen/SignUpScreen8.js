@@ -74,26 +74,35 @@ const SignUpScreen8 = () => {
     setLoading(true);
 
     const response = await Auth.signUp({
-      nickname,
-      password,
+      username: email,
+      password: password,
       attributes: {
-        preferred_username: nickname,
-        email,
-        first_name,
-        middle_name,
-        last_name,
-        gender,
-        birthdate,
-        address,
-        nickname,
-        picture,
-        mobile,
+        email: email,
+        given_name: first_name,
+        middle_name: middle_name,
+        family_name: last_name,
+        gender: gender,
+        birthdate: birthdate,
+        address: address,
+        nickname: nickname,
+        picture: picture,
+        phone_number: mobile,
       },
     })
       .then(res => {
         setLoading(false);
-        Alert.alert('Success', 'Registered Successfully.');
-        //navigation.navigate('ConfirmEmail', {username});
+        clearStorage();
+        Alert.alert(
+          'Registered Successfully',
+          'Please check your email for verification code.',
+          [
+            {
+              text: 'OK',
+              onPress: navigation.navigate('ConfirmEmail', {username: email}),
+            },
+          ],
+          {cancelable: false},
+        );
       })
       .catch(error => {
         setLoading(false);
@@ -158,6 +167,28 @@ const SignUpScreen8 = () => {
       alert('Failed to fetch the input from storage');
     }
   }, []);
+
+  const clearStorage = async () => {
+    try {
+      await AsyncStorage.removeItem(storagekey_email);
+      await AsyncStorage.removeItem(storagekey_password);
+      await AsyncStorage.removeItem(storagekey_repeatpassword);
+      await AsyncStorage.removeItem(storagekey_first_name);
+      await AsyncStorage.removeItem(storagekey_middle_name);
+      await AsyncStorage.removeItem(storagekey_last_name);
+      await AsyncStorage.removeItem(storagekey_gender);
+      await AsyncStorage.removeItem(storagekey_birthdate);
+      await AsyncStorage.removeItem(storagekey_country);
+      await AsyncStorage.removeItem(storagekey_state);
+      await AsyncStorage.removeItem(storagekey_city);
+      await AsyncStorage.removeItem(storagekey_nickname);
+      await AsyncStorage.removeItem(storagekey_picture);
+      await AsyncStorage.removeItem(storagekey_mobile);
+      return true;
+    } catch (exception) {
+      return false;
+    }
+  };
 
   const onSignInPress = () => {
     navigation.navigate('SignIn');

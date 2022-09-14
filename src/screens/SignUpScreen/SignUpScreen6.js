@@ -42,9 +42,35 @@ const SignUpScreen6 = () => {
 
     setLoading(true);
     saveData(formattedValue);
+    fetchOTP(formattedValue);
     setTimeout(() => {
       setLoading(false);
     }, 1000);
+  };
+
+  const fetchOTP = async mobile => {
+    setLoading(true);
+    const message = 'Your verification code is 123456';
+    try {
+      const response = await fetch(
+        'https://www.isms.com.my/isms_send_all_id.php?un=sgarcia&pwd=SBGpass123&dstno=' +
+          mobile +
+          '&msg=' +
+          message +
+          '&type=1&sendid=DOXCHECK&agreedterm=YES',
+        {method: 'POST'},
+      )
+        .then(res => {
+          console.log(res.status);
+        })
+        .catch(err => {
+          console.log(err.message);
+        });
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
   };
 
   const saveData = async mobile => {

@@ -1,0 +1,12 @@
+{
+  "resourceName": "s3xuredealstorageaefef193",
+  "bucketName": "xuredeal-storage-aefef193",
+  "policyUUID": "be1ef08d",
+  "storageAccess": "auth",
+  "guestAccess": [],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ]
+}

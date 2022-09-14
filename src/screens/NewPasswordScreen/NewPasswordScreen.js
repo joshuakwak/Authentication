@@ -22,6 +22,8 @@ const NewPasswordScreen = () => {
   const username = watch('username');
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
+  const [code, setCode] = useState('');
+  const [new_password, setNewPassword] = useState('');
 
   const onSubmitPressed = async data => {
     if (loading) {
@@ -29,11 +31,20 @@ const NewPasswordScreen = () => {
     }
 
     setLoading(true);
-
+    if (code == '') {
+      Alert.alert('Invalid code', 'Please input your verification code.');
+      setLoading(false);
+      return;
+    }
+    if (new_password == '') {
+      Alert.alert('Invalid password', 'Please input your password.');
+      setLoading(false);
+      return;
+    }
     const response = await Auth.forgotPasswordSubmit(
       data.username,
-      data.code,
-      data.password,
+      code,
+      new_password,
     )
       .then(res => {
         Alert.alert(
@@ -68,17 +79,17 @@ const NewPasswordScreen = () => {
           <Text style={styles.title}>Reset your password</Text>
 
           <CustomInput
-            placeholder="Username"
+            placeholder="Email"
             name="username"
             control={control}
-            rules={{required: 'Username is required'}}
+            rules={{required: 'Email is required'}}
           />
 
           <CustomInput
             placeholder="Code"
             name="code"
             control={control}
-            rules={{required: 'Code is required'}}
+            onChangeText={v => setCode(v)}
           />
 
           <CustomInput
@@ -88,12 +99,12 @@ const NewPasswordScreen = () => {
             secureTextEntry
             isPassword={true}
             rules={{
-              required: 'Password is required',
               minLength: {
                 value: 8,
                 message: 'Password should be at least 8 characters long.',
               },
             }}
+            onChangeText={v => setNewPassword(v)}
           />
 
           <CustomButton text="Submit" onPress={handleSubmit(onSubmitPressed)} />

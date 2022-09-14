@@ -40,5 +40,12 @@
         ]
       }
     }
+  },
+  "storage": {
+    "s3xuredealstorageaefef193": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": []
+    }
   }
 }

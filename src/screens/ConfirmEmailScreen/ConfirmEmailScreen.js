@@ -17,6 +17,7 @@ import Amplify, {Auth} from 'aws-amplify';
 const ConfirmEmailScreen = () => {
   const route = useRoute();
   const [loading, setLoading] = useState(false);
+  const [code, setCode] = useState('');
   const {control, handleSubmit, watch} = useForm({
     defaultValues: {username: route.params.username},
   });
@@ -32,9 +33,9 @@ const ConfirmEmailScreen = () => {
 
     setLoading(true);
 
-    const response = await Auth.confirmSignUp(data.username, data.code)
+    const response = await Auth.confirmSignUp(data.username, code)
       .then(res => {
-        Alert.alert('Success', 'Registered Successfully.', [
+        Alert.alert('Success', 'User confirmed successfully.', [
           {
             text: 'OK',
             onPress: () => {
@@ -93,8 +94,8 @@ const ConfirmEmailScreen = () => {
             name="code"
             control={control}
             placeholder="Enter your confirmation code"
-            rules={{
-              required: 'Confirmation code is required',
+            onChangeText={v => {
+              setCode(v);
             }}
           />
 

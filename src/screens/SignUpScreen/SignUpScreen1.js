@@ -45,12 +45,48 @@ const SignUpScreen1 = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeat_password, setRepeatPassword] = useState('');
+  const [hasNumber, setHasNumber] = useState(false);
+  const [hasUpper, setHasUpper] = useState(false);
+  const [hasLower, setHasLower] = useState(false);
+  const [hasSymbol, setHasSymbol] = useState(false);
+  const [has8Char, setHas8Char] = useState(false);
   const onRegisterPressed = async data => {
     if (loading) {
       return;
     }
 
     setLoading(true);
+    if (password !== repeat_password) {
+      alert('Passwords does not match.');
+      setLoading(false);
+      return;
+    }
+    if (!repeat_password.match(/(?=.{8,})/)) {
+      alert('Password must have at least 8 characters.');
+      setLoading(false);
+      return;
+    }
+    if (!repeat_password.match(/(?=.*[A-Z])/)) {
+      alert('Password must have an uppercase letter.');
+      setLoading(false);
+      return;
+    }
+    if (!repeat_password.match(/(?=.*[a-z])/)) {
+      alert('Password must have lowercase letter.');
+      setLoading(false);
+      return;
+    }
+    if (!repeat_password.match(/(?=.*[0-9])/)) {
+      alert('Password must have at least 1 number.');
+      setLoading(false);
+      return;
+    }
+    if (!repeat_password.match(/(?=.*[!@#$%^&*])/)) {
+      alert('Password must have at least 1 symbol.');
+      setLoading(false);
+      return;
+    }
+
     saveData(
       data.email ? data.email : email,
       data.password ? data.password : password,
@@ -80,6 +116,35 @@ const SignUpScreen1 = () => {
       console.log('email and password saved');
     } catch (e) {
       console.log('Failed to save the data to the storage');
+    }
+  };
+
+  const updatePassword = password => {
+    setRepeatPassword(password);
+    if (password.match(/(?=.*[A-Z])/)) {
+      setHasUpper(true);
+    } else {
+      setHasUpper(false);
+    }
+    if (password.match(/(?=.*[a-z])/)) {
+      setHasLower(true);
+    } else {
+      setHasLower(false);
+    }
+    if (password.match(/(?=.{8,})/)) {
+      setHas8Char(true);
+    } else {
+      setHas8Char(false);
+    }
+    if (password.match(/(?=.*[0-9])/)) {
+      setHasNumber(true);
+    } else {
+      setHasNumber(false);
+    }
+    if (password.match(/(?=.*[!@#$%^&*])/)) {
+      setHasSymbol(true);
+    } else {
+      setHasSymbol(false);
     }
   };
 
@@ -155,8 +220,58 @@ const SignUpScreen1 = () => {
             rules={{
               validate: value => value === pwd || 'Password do not match',
             }}
-            onChangeText={value => setRepeatPassword(value)}
+            onChangeText={value => {
+              updatePassword(value);
+            }}
           />
+
+          <View style={{width: '100%'}}>
+            <Text style={{fontWeight: 'bold', fontSize: 16}}>
+              Password must meet the following requirements:
+            </Text>
+          </View>
+          <View style={{width: '90%'}}>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                fontSize: 14,
+                color: hasUpper ? 'green' : 'red',
+              }}>
+              • At least one uppercase letter
+            </Text>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                fontSize: 14,
+                color: hasLower ? 'green' : 'red',
+              }}>
+              • At least one lowercase letter
+            </Text>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                fontSize: 14,
+                color: hasNumber ? 'green' : 'red',
+              }}>
+              • At least one number
+            </Text>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                fontSize: 14,
+                color: hasSymbol ? 'green' : 'red',
+              }}>
+              • At least one special character
+            </Text>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                fontSize: 14,
+                color: has8Char ? 'green' : 'red',
+              }}>
+              • At least 8 characters
+            </Text>
+          </View>
 
           <CustomButton text="Next" onPress={handleSubmit(onRegisterPressed)} />
 

@@ -287,7 +287,7 @@ const SignUpScreen2 = () => {
             onConfirm={date => {
               setDatePickerOpen(false);
               setBirthdate(date);
-              setBirthdateString(Moment(date).format('MMM DD, yyyy'));
+              setBirthdateString(Moment(date).format('MM/DD/yyyy'));
             }}
             onCancel={() => {
               setDatePickerOpen(false);

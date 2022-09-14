@@ -22,6 +22,8 @@ const SignInScreen = () => {
   const {height} = useWindowDimensions();
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const {
     control,
@@ -36,12 +38,25 @@ const SignInScreen = () => {
 
     setLoading(true);
 
-    const response = await Auth.signIn(data.username, data.password)
+    if (email == '') {
+      alert('Please input your email and password.');
+      setLoading(false);
+      return;
+    }
+    if (password == '') {
+      alert('Please input your email and password.');
+      setLoading(false);
+      return;
+    }
+    const response = await Auth.signIn(email, password)
       .then(res => {
         console.log(res);
       })
       .catch(error => {
         Alert.alert('Oops...', error.message);
+        // if (error.message == 'User is not confirmed.') {
+        //   navigation.navigate('ConfirmEmail', {username: email});
+        // }
       });
 
     setLoading(false);
@@ -69,10 +84,12 @@ const SignInScreen = () => {
           />
 
           <CustomInput
-            name="username"
-            placeholder="Username"
+            name="email"
+            placeholder="Email"
             control={control}
-            rules={{required: 'Username is required'}}
+            onChangeText={v => {
+              setEmail(v);
+            }}
           />
 
           <CustomInput
@@ -81,18 +98,14 @@ const SignInScreen = () => {
             placeholder="Password"
             secureTextEntry
             control={control}
-            rules={{
-              required: 'Password is required',
-              minLength: {
-                value: 8,
-                message: 'Password should be minimum 8 characters long',
-              },
+            onChangeText={v => {
+              setPassword(v);
             }}
           />
 
           <CustomButton
             text={loading ? 'Loading...' : 'Sign In'}
-            onPress={handleSubmit(onSignInPressed)}
+            onPress={onSignInPressed}
           />
 
           <CustomButton

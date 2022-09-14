@@ -36,6 +36,7 @@ const SignUpScreen7 = () => {
   const [loading, setLoading] = useState(false);
   const [otp, setOTP] = React.useState('');
   const refOTP = React.useRef();
+
   const onRegisterPressed = async data => {
     if (loading) {
       return;

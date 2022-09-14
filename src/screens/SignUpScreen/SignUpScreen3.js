@@ -52,8 +52,9 @@ const SignUpScreen3 = () => {
         console.log(item.country_name);
         country_names.push(item.country_name);
       });
+      const PH = country_names.indexOf('Philippines');
+      country_names.unshift(country_names.splice(PH, 1)[0]);
       setCountries(country_names);
-      fetchStates(countries[countries.indexOf('Philippines')]);
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -64,6 +65,7 @@ const SignUpScreen3 = () => {
   const fetchStates = async country => {
     setLoading(true);
     try {
+      console.log('fetch states');
       const response = await fetch(
         'http://184.73.77.248:82/api/XDApp/GetState?country=' + country,
         {method: 'POST'},
@@ -76,7 +78,7 @@ const SignUpScreen3 = () => {
       });
       state_names.sort();
       setStates(state_names);
-      console.log(json);
+      console.log(state_names);
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -134,25 +136,26 @@ const SignUpScreen3 = () => {
   };
 
   React.useEffect(async () => {
-    try {
-      const country = await AsyncStorage.getItem(storagekey_country);
-      const state = await AsyncStorage.getItem(storagekey_state);
-      const city = await AsyncStorage.getItem(storagekey_city);
-      if (country !== null) {
-        fetchCountries();
-        setSelectedCountry(country);
-      }
-      if (state !== null) {
-        fetchStates(selectedCountry);
-        setSelectedState(state);
-      }
-      if (city !== null) {
-        fetchCities(selectedState);
-        setSelectedCity(city);
-      }
-    } catch (e) {
-      alert('Failed to fetch the input from storage');
-    }
+    // try {
+    //   const country = await AsyncStorage.getItem(storagekey_country);
+    //   const state = await AsyncStorage.getItem(storagekey_state);
+    //   const city = await AsyncStorage.getItem(storagekey_city);
+    //   if (country !== null) {
+    //     fetchCountries();
+    //     setSelectedCountry(country);
+    //   }
+    //   if (state !== null) {
+    //     fetchStates(selectedCountry);
+    //     setSelectedState(state);
+    //   }
+    //   if (city !== null) {
+    //     fetchCities(selectedState);
+    //     setSelectedCity(city);
+    //   }
+    // } catch (e) {
+    //   alert('Failed to fetch the input from storage');
+    // }
+    fetchCountries();
   }, []);
 
   const onRegisterPressed = async data => {
@@ -188,7 +191,6 @@ const SignUpScreen3 = () => {
             defaultButtonText={
               selectedCountry ? selectedCountry : 'Select Country'
             }
-            defaultValue={countries[countries.indexOf(selectedCountry)]}
             buttonStyle={{
               borderWidth: 1,
               borderColor: '#e8e8e8',
@@ -253,6 +255,7 @@ const SignUpScreen3 = () => {
             rowTextForSelection={(item, index) => {
               // text represented for each item in dropdown
               // if data array is an array of objects then return item.property to represent item in dropdown
+
               return item;
             }}
           />

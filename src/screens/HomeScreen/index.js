@@ -24,8 +24,8 @@ const index = () => {
   useEffect(async () => {
     Auth.currentAuthenticatedUser()
       .then(user => {
-        console.log('username = ' + user.attributes.preferred_username);
-        setUser(user.attributes.preferred_username);
+        console.log('username = ' + user.attributes.given_name);
+        setUser(user.attributes.given_name);
       })
       .catch(err => console.log(err));
     Storage.list('') // for listing ALL files without prefix, pass '' instead
