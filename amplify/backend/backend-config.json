@@ -20,7 +20,8 @@
           "ADDRESS",
           "NICKNAME",
           "PICTURE",
-          "PHONE_NUMBER"
+          "PHONE_NUMBER",
+          "UPDATED_AT"
         ],
         "passwordProtectionSettings": {
           "passwordPolicyMinLength": 8,
@@ -39,13 +40,6 @@
           "EMAIL"
         ]
       }
-    }
-  },
-  "storage": {
-    "s3xuredealstorageaefef193": {
-      "service": "S3",
-      "providerPlugin": "awscloudformation",
-      "dependsOn": []
     }
   }
 }

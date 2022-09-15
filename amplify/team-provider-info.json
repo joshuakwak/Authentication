@@ -1,19 +1,18 @@
 {
   "staging": {
     "awscloudformation": {
-      "AuthRoleName": "amplify-xuredeal-staging-05154-authRole",
-      "UnauthRoleArn": "arn:aws:iam::553019064488:role/amplify-xuredeal-staging-05154-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::553019064488:role/amplify-xuredeal-staging-05154-authRole",
+      "AuthRoleName": "amplify-xuredeal-staging-21235-authRole",
+      "UnauthRoleArn": "arn:aws:iam::643047513376:role/amplify-xuredeal-staging-21235-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::643047513376:role/amplify-xuredeal-staging-21235-authRole",
       "Region": "ap-southeast-1",
-      "DeploymentBucketName": "amplify-xuredeal-staging-05154-deployment",
-      "UnauthRoleName": "amplify-xuredeal-staging-05154-unauthRole",
-      "StackName": "amplify-xuredeal-staging-05154",
-      "StackId": "arn:aws:cloudformation:ap-southeast-1:553019064488:stack/amplify-xuredeal-staging-05154/18d3c2a0-3235-11ed-af7b-02d2a38b514c",
-      "AmplifyAppId": "d2hlspp427bu1b"
+      "DeploymentBucketName": "amplify-xuredeal-staging-21235-deployment",
+      "UnauthRoleName": "amplify-xuredeal-staging-21235-unauthRole",
+      "StackName": "amplify-xuredeal-staging-21235",
+      "StackId": "arn:aws:cloudformation:ap-southeast-1:643047513376:stack/amplify-xuredeal-staging-21235/dd918470-349b-11ed-8532-0a6a254fe39a",
+      "AmplifyAppId": "d17366hevi3q3p"
     },
     "categories": {
       "auth": {
-        "Authentication": {},
         "XureDeal": {}
       }
     }
